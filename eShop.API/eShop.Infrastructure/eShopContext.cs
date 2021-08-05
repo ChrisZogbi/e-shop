@@ -21,8 +21,6 @@ namespace eShop.Infrastructure
                 new Product(20001, 2, "Game of Thrones", 9),
                 new Product(20110, 2, "Breaking Bad", 7)
             );
-
-            //base.OnModelCreating(builder);
         }
     }
 }
