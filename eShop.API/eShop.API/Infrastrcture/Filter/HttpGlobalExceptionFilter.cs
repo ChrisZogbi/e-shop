@@ -1,4 +1,5 @@
-﻿using eShop.Infrastructure.ActionResult;
+﻿using eShop.Api.Domain.Exceptions;
+using eShop.Infrastructure.ActionResult;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -26,16 +27,34 @@ namespace eShop.Infrastructure.Filter
                 context.Exception,
                 context.Exception.Message);
 
-            var problemDetails = new ValidationProblemDetails()
+            if (context.Exception.GetType() == typeof(eShopDomainException))
             {
-                Instance = context.HttpContext.Request.Path,
-                Status = StatusCodes.Status500InternalServerError,
-                Detail = "Please refer to the errors property for additional details."
-            };
+                var problemDetails = new ValidationProblemDetails()
+                {
+                    Instance = context.HttpContext.Request.Path,
+                    Status = StatusCodes.Status400BadRequest,
+                    Detail = "Please refer to the errors property for additional details."
+                };
 
-            problemDetails.Errors.Add("Exception", new string[] { context.Exception.Message.ToString() });
+                problemDetails.Errors.Add("DomainValidations", new string[] { context.Exception.InnerException.Message.ToString() });
 
-            context.Result = new InternalServerErrorObjectResult(problemDetails);
+                context.Result = new BadRequestObjectResult(problemDetails);
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+            else
+            {
+
+                var problemDetails = new ValidationProblemDetails()
+                {
+                    Instance = context.HttpContext.Request.Path,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Detail = "Please refer to the errors property for additional details."
+                };
+
+                problemDetails.Errors.Add("Exception", new string[] { context.Exception.Message.ToString() });
+
+                context.Result = new InternalServerErrorObjectResult(problemDetails);
+            }
 
             context.ExceptionHandled = true;
 

@@ -8,7 +8,7 @@ namespace eShop.Domain.Aggregates
         public int Id { get; set; }
         public int UserId { get; set; }
 
-        public List<Product> Items { get; set; } = new List<Product>();
+        public virtual List<BasketItem> Items { get; set; } = new List<BasketItem>();
 
         public DateTime CreationDate { get; set; }
 
@@ -16,6 +16,16 @@ namespace eShop.Domain.Aggregates
         {
             UserId = userId;
             CreationDate = DateTime.UtcNow;
+        }
+
+        public decimal GetTotal()
+        {
+            var total = 0m;
+            foreach (var item in Items)
+            {
+                total += (item.Product.Price * item.Quantity);
+            }
+            return total;
         }
     }
 }

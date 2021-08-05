@@ -9,8 +9,8 @@ namespace eShop.AppService.Models
 {
     public class BasketSummaryModel
     {
-        public DateTime CreationDate { get; set; }
-        public List<BasketItem> BasketItems { get; set; } = new List<BasketItem>();
+        public string CreationDate { get; set; }
+        public List<ItemSummaryModel> BasketItems { get; set; } = new List<ItemSummaryModel>();
         public decimal Total { get; set; }
     }
 }

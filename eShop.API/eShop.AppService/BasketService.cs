@@ -1,6 +1,10 @@
-﻿using eShop.AppService.Models;
+﻿using eShop.Api.Domain.Exceptions;
+using eShop.AppService.Models;
 using eShop.AppService.ServiceInterfaces;
 using eShop.Domain.Aggregates;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.AppService
@@ -33,14 +37,29 @@ namespace eShop.AppService
                 product = await _productRepository.GetByName(addItemModel.ProductName);
             }
 
+            if (product == null)
+            {
+                throw new eShopDomainException(
+                    $"Command Validation Errors for type {nameof(BasketService)}",
+                    new ValidationException("Validation exception: Wrong Product"));
+            }
+
             var basketItem = new BasketItem(basket.Id, product.Id, addItemModel.Quantity);
 
             await _basketRepository.AddItemToBasket(basketItem);
         }
 
-        public Task<BasketSummaryModel> GetBasketSummary()
+        public async Task<BasketSummaryModel> GetBasketSummary(int userId)
         {
-            throw new System.NotImplementedException();
+            var basket = await _basketRepository.GetUserBasket(userId);
+
+            var basketSummary = new BasketSummaryModel() { 
+                CreationDate = basket.CreationDate.ToShortDateString(),
+                BasketItems = basket.Items.Select(x => new ItemSummaryModel() { Name = x.Product.Name, Price = x.Product.Price, Quantity = x.Quantity}).ToList(),
+                Total = basket.GetTotal()
+            };
+
+            return basketSummary;
         }
 
         private async Task<Basket> CreateBasket(int userId)

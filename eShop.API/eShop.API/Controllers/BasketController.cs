@@ -27,12 +27,12 @@ namespace eShop.API.Controllers
             return Ok();
         }
 
-        //[HttpGet]
-        //[Route("{sku}/{transactionCurrency}")]
-        //public async Task<ActionResult<TransactionModel>> GetTransactionsBySku([FromRoute] string sku, string transactionCurrency)
-        //{
-        //    var result = await _transactionService.GetTransactionsBySku(sku, transactionCurrency);
-        //    return Ok(result);
-        //}
+        [HttpGet]
+        [Route("summary/{userId}")]
+        public async Task<ActionResult<BasketSummaryModel>> GetBasketSummary([FromRoute] int userId)
+        {
+            var result = await _basketService.GetBasketSummary(userId);
+            return Ok(result);
+        }
     }
 }

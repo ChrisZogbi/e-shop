@@ -11,6 +11,6 @@ namespace eShop.AppService.ServiceInterfaces
     public interface IBasketService
     {
         Task AddItem(AddItemModel addItemModel);
-        Task<BasketSummaryModel> GetBasketSummary();
+        Task<BasketSummaryModel> GetBasketSummary(int userId);
     }
 }
