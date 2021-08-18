@@ -12,6 +12,10 @@ namespace eShop.Domain.Aggregates
 
         public DateTime CreationDate { get; set; }
 
+        public Basket()
+        {
+        }
+
         public Basket(int userId)
         {
             UserId = userId;
@@ -26,6 +30,11 @@ namespace eShop.Domain.Aggregates
                 total += (item.Product.Price * item.Quantity);
             }
             return total;
+        }
+
+        public void AddItem(BasketItem item)
+        {
+            Items.Add(item);
         }
     }
 }
