@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.AppService
@@ -26,7 +25,6 @@ namespace eShop.AppService
 
         public async Task AddItem(AddItemModel addItemModel)
         {
-
             var basket = await _basketRepository.GetUserBasket(addItemModel.UserId);
             var product = new Product();
 
@@ -55,12 +53,12 @@ namespace eShop.AppService
                     new ValidationException("Validation exception: Wrong Product"));
             }
 
-            var basketItem = new BasketItem(basket.Id, product.Id, addItemModel.Quantity);
+            var basketItem = new BasketItem(basket, product, addItemModel.Quantity);
 
             await _basketRepository.AddItemToBasket(basketItem);
 
             _logger.LogInformation("[ITEM ADDED TO SHOPPING CART]: Added[<'{Date}'>], UserId: {UserId}, ProductId: {ProductId}, Quantity: {Quantity}, Price[<€{Price}>", 
-                DateTime.UtcNow.ToShortDateString(), basket.UserId, basketItem.ProductId, basketItem.Quantity, basketItem.Product.Price);
+                DateTime.UtcNow.ToShortDateString(), basket.UserId, basketItem.Product.Id, basketItem.Quantity, basketItem.Product.Price);
 
         }
 

@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace eShop.Domain.Aggregates
+﻿namespace eShop.Domain.Aggregates
 {
     public class BasketItem
     {
         public int Id { get; set; }
-        public int BasketId { get; set; }
-        public int ProductId { get; set; }
+        private int _basketId { get; }
+        public Basket Basket { get; set; }
+        private int _productId { get; }
         public virtual Product Product { get; set; }
         public int Quantity { get; set; }
 
-        public BasketItem(int basketId, int productId, int quantity)
+        public BasketItem() { }
+
+        public BasketItem(Basket basket, Product product, int quantity)
         {
-            BasketId = basketId;
-            ProductId = productId;
+            Basket = basket;
+            Product = product;
             Quantity = quantity;
+
+            _basketId = basket.Id;
+            _productId = product.Id;
         }
     }
 }
